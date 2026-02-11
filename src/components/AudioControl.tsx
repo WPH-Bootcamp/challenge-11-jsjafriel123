@@ -13,11 +13,16 @@ export function AudioControl({ audioRef, src, onPlay }: AudioControlProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(0.5);
+  const [volume, setVolume] = useState(0.7);
+  const [isLooping, setIsLooping] = useState(false);
+  const [isShuffle, setIsShuffle] = useState(false);
 
   //   console.log("AudioControl audioRef:", audioRef);
   const isFile = Boolean(src);
   const audio = audioRef.current;
+  if (isPlaying && audio?.src !== src) {
+    setIsPlaying(false);
+  }
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -55,14 +60,17 @@ export function AudioControl({ audioRef, src, onPlay }: AudioControlProps) {
       audio.pause();
       setIsPlaying(false);
     }
-
-    // console.log("Audio:", audio);
+  };
+  const toggleLoop = () => {
+    setIsLooping((prev) => !prev);
+  };
+  const toggleShuffle = () => {
+    setIsShuffle((prev) => !prev);
   };
 
   const handleVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = parseFloat(e.target.value);
-    setVolume(val);
     if (audioRef.current) {
+      const val = parseFloat(e.target.value);
       audioRef.current.volume = Math.min(1, Math.max(0, val));
       setVolume(val);
     }
@@ -76,6 +84,7 @@ export function AudioControl({ audioRef, src, onPlay }: AudioControlProps) {
         //   controls
         // onPlay={onPlay}
         preload="none"
+        loop={isLooping}
         // muted
       />
       {/* Progress Bar */}
@@ -109,7 +118,12 @@ export function AudioControl({ audioRef, src, onPlay }: AudioControlProps) {
         <img
           src="/assets/icon-Shuffle.svg"
           alt="Shuffle"
-          className="size-9 p-2 rounded-md cursor-pointer"
+          onClick={toggleShuffle}
+          className={`size-9 p-2 rounded-md cursor-pointer ${
+            isShuffle
+              ? "bg-neutral-800 shadow-[0px_0px_5px_1px_rgba(139,92,246,0.8)]"
+              : "bg-none"
+          }`}
         />
         <img
           src="/assets/icon-Back.svg"
@@ -122,12 +136,12 @@ export function AudioControl({ audioRef, src, onPlay }: AudioControlProps) {
           onClick={isFile ? togglePlay : undefined}
           className={`flex justify-center items-center size-14 rounded-full p-4 ${isFile ? (isPlaying ? "bg-primary-200 cursor-pointer" : "bg-primary-300 cursor-pointer") : "bg-neutral-500 cursor-not-allowed"}`}
           initial={
-            isFile ?? { boxShadow: "0px 0px 20px 1px rgba(139, 92, 246, 0.3)" }
+            isFile ?? { boxShadow: "0px 0px 20px 1px rgba(139,92,246,0.3)" }
           }
           animate={
             isFile && !isPlaying
-              ? { boxShadow: "0px 0px 45px 5px rgba(139, 92, 246, 0.8)" }
-              : { boxShadow: "0px 0px 20px 1px rgba(139, 92, 246, 0.3)" }
+              ? { boxShadow: "0px 0px 45px 5px rgba(139,92,246,0.8)" }
+              : { boxShadow: "0px 0px 20px 1px rgba(139,92,246,0.3)" }
           }
           transition={
             isFile && !isPlaying
@@ -148,7 +162,12 @@ export function AudioControl({ audioRef, src, onPlay }: AudioControlProps) {
         <img
           src="/assets/icon-Repeat.svg"
           alt="Repeat"
-          className="size-9 p-2 rounded-md cursor-pointer"
+          onClick={toggleLoop}
+          className={`size-9 p-2 rounded-md cursor-pointer ${
+            isLooping
+              ? "bg-neutral-800 shadow-[0px_0px_5px_1px_rgba(139,92,246,0.8)]"
+              : "bg-none"
+          }`}
         />
       </div>
       {/* Volume */}
@@ -171,10 +190,9 @@ export function AudioControl({ audioRef, src, onPlay }: AudioControlProps) {
             className="absolute flex items-center w-full h-1 appearance-none bg-transparent cursor-pointer 
                [&::-webkit-slider-thumb]:appearance-none
                [&::-webkit-slider-thumb]:size-2
-               [&::-webkit-slider-thumb]:object-center
                [&::-webkit-slider-thumb]:rounded-full
                [&::-webkit-slider-thumb]:bg-primary-100
-               [&::-webkit-slider-thumb]:shadow-[0_0_60px_20px_rgba(124, 58, 237, 0.8)]"
+               [&::-webkit-slider-thumb]:shadow-[0_0_40px_5px_rgba(124, 58, 237, 0.6)]"
           />
         </div>
       </div>

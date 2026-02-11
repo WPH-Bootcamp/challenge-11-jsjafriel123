@@ -19,7 +19,6 @@ export function MusicPlayer() {
   const mid1MV = useRef(useMotionValue(0)).current;
   const mid2MV = useRef(useMotionValue(0)).current;
   const trebleMV = useRef(useMotionValue(0)).current;
-  // const { audioRef, bands, isBeat, resumeAudio, maxBass } = useAudioAnalyser();
   const { audioRef, resumeAudio, isBeat } = useAudioAnalyser({
     bass1MV,
     bass2MV,
@@ -51,12 +50,6 @@ export function MusicPlayer() {
       }
     };
   }, []);
-
-  // const normalizedBass1 = bands.bass1 / NORMALIZEDIV;
-  // const normalizedBass2 = bands.bass2 / NORMALIZEDIV;
-  // const normalizedMid1 = bands.mid1 / NORMALIZEDIV;
-  // const normalizedMid2 = bands.mid2 / NORMALIZEDIV;
-  // const normalizedTreble = bands.treble / NORMALIZEDIV;
 
   // TODO: Implementasikan handler untuk play/pause
 
@@ -99,6 +92,8 @@ export function MusicPlayer() {
                 const url = pictureToUrl(tags.picture);
                 // console.log("AWUrl:", url);
                 setArtworkUrl(url);
+              } else {
+                setArtworkUrl(null);
               }
             }}
           />
@@ -154,7 +149,6 @@ export function MusicPlayer() {
           src={audioUrl ?? undefined}
           onPlay={resumeAudio}
         />
-        {/* <div className="flex"> {isBeat ? "🔥" : ""}</div> */}
       </div>
     </div>
   );

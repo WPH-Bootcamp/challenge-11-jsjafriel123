@@ -38,19 +38,19 @@ export function useAudioAnalyser({
   const [isBeat, setIsBeat] = useState(false);
   //   const [maxBass, setMaxBass] = useState(0);
   const lastBassRef = useRef(0);
+
   const maxBass1Ref = useRef(1);
   const maxBass2Ref = useRef(1);
   const maxMid1Ref = useRef(1);
   const maxMid2Ref = useRef(1);
   const maxTrebleRef = useRef(1);
 
-  const [maxBass, setMaxBass] = useState(0);
   const smoothBass1Ref = useRef(0);
   const smoothBass2Ref = useRef(0);
   const smoothMid1Ref = useRef(0);
   const smoothMid2Ref = useRef(0);
   const smoothTrebleRef = useRef(0);
-  const cycleCount = useRef(CYCLE_RATE);
+  // const cycleCount = useRef(CYCLE_RATE);
 
   const resumeAudio = async () => {
     if (!audioContextRef.current) return;
@@ -151,33 +151,11 @@ export function useAudioAnalyser({
       // Optional clamp
       if (smoothBass1Ref.current < 0.01) smoothBass1Ref.current = 0;
       if (smoothBass2Ref.current < 0.01) smoothBass2Ref.current = 0;
-      //  if (smoothMid1Ref.current < 0.01)  smoothMid1Ref.current = 0;
-      //  if (smoothMid2Ref.current < 0.01)  smoothMid2Ref.current = 0;
-      //  if (smoothTrebleRef.current < 0.01)  smoothTrebleRef.current = 0;
-
-      // setBands((prev) => ({
-      //   ...prev,
-      //   bass1: smoothBass1Ref.current,
-      //   bass2: smoothBass2Ref.current,
-      //   mid1: normMid1,
-      //   mid2: normMid2,
-      //   treble: normTreble,
-      //   bass1: bass1,
-      //   bass2: bass2,
-      //   mid1: mid1,
-      //   mid2: mid2,
-      //   treble: treble,
-      // }));
 
       // ---- Beat detection (bass spike) ----
       const lastBass = lastBassRef.current;
       const threshold = lastBass * 1.25;
-      //   if (bass > maxBassRef.current) {
-      //     maxBassRef.current = bass;
-      //     setMaxBass(bass);
-      //   }
-      setIsBeat(bass2 > threshold && bass2 > 80);
-      // setIsBeat(bass1 > lastBass || bass2 > lastBass);
+      setIsBeat(bass2 > threshold && bass2 > 50);
 
       lastBassRef.current = bass1;
       bass1MV.set(normBass1);

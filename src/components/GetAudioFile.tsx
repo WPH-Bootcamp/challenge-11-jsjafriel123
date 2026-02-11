@@ -39,7 +39,7 @@ export function GetAudioFile({ onMetadata }: GetAudioFileProps) {
       />
       <label
         htmlFor="audio-upload"
-        className={`flex cursor-pointer text-[12px] font-medium hover:scale-110  drop-shadow-[0_0_10px_rgba(167,139,250,1)] z-20 ${audioUrl ? "text-primary-200" : "text-primary-300"}`}
+        className={`flex cursor-pointer text-[12px] text-primary-300 font-medium hover:scale-110  drop-shadow-[0_0_10px_rgba(167,139,250,1)] z-20 ${audioUrl ? "brightness-100" : "brightness-150"}`}
       >
         Open
       </label>

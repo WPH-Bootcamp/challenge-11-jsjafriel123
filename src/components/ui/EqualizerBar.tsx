@@ -1,11 +1,15 @@
-import { motion, MotionValue, useSpring, useMotionValue } from "motion/react";
+import { motion, MotionValue } from "motion/react";
 import { useTransform } from "motion/react";
 
 type EqualizerBarProps = {
   toneMV: MotionValue<number>;
+  offset: number;
+  // isLoading: boolean;
 };
-export function EqualizerBar({ toneMV }: EqualizerBarProps) {
-  const scaleY = useTransform(toneMV, [0, 1], [0.2, 1.2], { clamp: true });
+export function EqualizerBar({ toneMV, offset = 0.2 }: EqualizerBarProps) {
+  const scaleY = useTransform(toneMV, [0, 1], [offset, 1.2], {
+    clamp: true,
+  });
 
   return (
     <div

@@ -82,11 +82,17 @@ export function AudioControl({ audioRef, src, onPlay }: AudioControlProps) {
       <div className="flex w-full h-2 bg-gray-800 rounded-full">
         <motion.div
           style={{
+            backgroundColor: isFile
+              ? "var(--color-primary-200)"
+              : "var(--color-neutral-500)",
             scaleX: currentTime / duration,
             transformOrigin: "left",
-            boxShadow: "0px 0px 30px 5px rgba(124, 58, 237, 0.6)",
+            boxShadow:
+              isFile && isPlaying
+                ? "0px 0px 30px 5px rgba(124, 58, 237, 0.6)"
+                : "none",
           }}
-          className="flex w-full h-2 bg-primary-200 rounded-l-full rounded-r-none"
+          className="flex w-full h-2 rounded-l-full rounded-r-none"
         />
       </div>
       {/* Progress Time */}
@@ -110,11 +116,29 @@ export function AudioControl({ audioRef, src, onPlay }: AudioControlProps) {
           alt="Previous"
           className="size-9 p-2 rounded-md cursor-pointer"
         />
-        <img
+        <motion.img
           src={isPlaying ? "/assets/icon-Pause.svg" : "/assets/icon-Play.svg"}
           alt={isPlaying ? "Pause" : "Play"}
           onClick={isFile ? togglePlay : undefined}
           className={`flex justify-center items-center size-14 rounded-full p-4 ${isFile ? (isPlaying ? "bg-primary-200 cursor-pointer" : "bg-primary-300 cursor-pointer") : "bg-neutral-500 cursor-not-allowed"}`}
+          initial={
+            isFile ?? { boxShadow: "0px 0px 20px 1px rgba(139, 92, 246, 0.3)" }
+          }
+          animate={
+            isFile && !isPlaying
+              ? { boxShadow: "0px 0px 45px 5px rgba(139, 92, 246, 0.8)" }
+              : { boxShadow: "0px 0px 20px 1px rgba(139, 92, 246, 0.3)" }
+          }
+          transition={
+            isFile && !isPlaying
+              ? {
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatType: "mirror",
+                  ease: "easeInOut",
+                }
+              : { duration: 1, ease: "easeInOut" }
+          }
         />
         <img
           src="/assets/icon-Forward.svg"
@@ -144,15 +168,13 @@ export function AudioControl({ audioRef, src, onPlay }: AudioControlProps) {
             value={volume}
             //   defaultValue={0.5}
             onChange={handleVolume}
-            className="absolute flex items-center w-full h-1 appearance-none bg-transparent cursor-pointer z-10 
+            className="absolute flex items-center w-full h-1 appearance-none bg-transparent cursor-pointer 
                [&::-webkit-slider-thumb]:appearance-none
                [&::-webkit-slider-thumb]:size-2
                [&::-webkit-slider-thumb]:object-center
                [&::-webkit-slider-thumb]:rounded-full
                [&::-webkit-slider-thumb]:bg-primary-100
-               [&::-webkit-slider-thumb]:border
-               [&::-webkit-slider-thumb]:border-primary-300
-               [&::-webkit-slider-thumb]:shadow-[0_0_60px_10px_rgba(124, 58, 237, 0.6)]"
+               [&::-webkit-slider-thumb]:shadow-[0_0_60px_20px_rgba(124, 58, 237, 0.8)]"
           />
         </div>
       </div>

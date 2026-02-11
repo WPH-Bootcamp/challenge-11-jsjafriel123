@@ -31,9 +31,21 @@ export function MusicPlayer() {
   const [tags, setTags] = useState<Tags | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [artworkUrl, setArtworkUrl] = useState<string | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
+    const player = audioRef.current;
+    if (!player) return;
+
+    const updateStatus = () => setIsPaused(player.paused);
+
+    // Listen for native audio events
+    player.addEventListener("play", updateStatus);
+    player.addEventListener("pause", updateStatus);
+
     return () => {
+      player.removeEventListener("play", updateStatus);
+      player.removeEventListener("pause", updateStatus);
       if (artworkUrl) {
         URL.revokeObjectURL(artworkUrl);
       }
@@ -61,12 +73,22 @@ export function MusicPlayer() {
       {/* TODO: Implementasikan music player di sini */}
 
       <div
-        className="flex flex-col items-center w-125 h-93.5 bg-[#1A1A1A] font-normal text-white rounded-2xl p-xl gap-4"
-        style={{
-          boxShadow: "0px 0px 40px 0px #8B5CF64D",
-          filter: "brightness(1.2) contrast(1.1)",
-        }}
+        className="relative flex flex-col items-center w-125 h-93.5 rounded-2xl p-xl gap-4"
+        style={
+          isPaused || !audioUrl
+            ? {
+                backgroundColor: "#0F0F0F",
+              }
+            : {
+                backgroundColor: "#1A1A1A",
+                boxShadow: "0px 0px 40px 0px #8B5CF64D",
+                filter: "brightness(1.2) contrast(1.1)",
+              }
+        }
       >
+        <div
+          className={`${audioUrl ? "hidden" : "block"} absolute w-125 h-93.5 rounded-2xl z-10 bg-[#0F0F0F]/50`}
+        />
         <div className="flex flex-col">
           <GetAudioFile
             onMetadata={(tags, file) => {
@@ -118,11 +140,11 @@ export function MusicPlayer() {
             </div>
             <div className="absolute flex pl-36 mt-27.5">
               <div className="flex flex-row w-14 h-8 gap-1 justify-center">
-                <EqualizerBar toneMV={bass1MV} />
-                <EqualizerBar toneMV={bass2MV} />
-                <EqualizerBar toneMV={mid1MV} />
-                <EqualizerBar toneMV={mid2MV} />
-                <EqualizerBar toneMV={trebleMV} />
+                <EqualizerBar toneMV={bass1MV} offset={audioUrl ? 0.2 : 0.5} />
+                <EqualizerBar toneMV={bass2MV} offset={audioUrl ? 0.2 : 0.5} />
+                <EqualizerBar toneMV={mid1MV} offset={audioUrl ? 0.2 : 0.5} />
+                <EqualizerBar toneMV={mid2MV} offset={audioUrl ? 0.2 : 0.5} />
+                <EqualizerBar toneMV={trebleMV} offset={audioUrl ? 0.2 : 0.5} />
               </div>
             </div>
           </div>

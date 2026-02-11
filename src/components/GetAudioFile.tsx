@@ -1,7 +1,6 @@
 "use client";
 import type { Tags } from "jsmediatags/dist/jsmediatags.min.js";
-import { div } from "motion/react-client";
-
+import { useState } from "react";
 type GetAudioFileProps = {
   onMetadata: (tags: Tags, file: File) => void;
 };
@@ -20,8 +19,10 @@ async function readMetadata(file: File, onMetadata: (tags: Tags) => void) {
 }
 
 export function GetAudioFile({ onMetadata }: GetAudioFileProps) {
+  const [audioUrl, setAudioUrl] = useState(false);
+
   return (
-    <div className="flex w-full justify-end">
+    <div className="flex w-full justify-end z-10">
       <input
         id="audio-upload"
         type="file"
@@ -32,14 +33,15 @@ export function GetAudioFile({ onMetadata }: GetAudioFileProps) {
           readMetadata(file, (tags) => {
             onMetadata(tags, file);
           });
+          setAudioUrl(true);
         }}
         className="hidden"
       />
       <label
         htmlFor="audio-upload"
-        className="flex cursor-pointer underline text-xs font-medium hover:scale-110 text-neutral-400"
+        className={`flex cursor-pointer text-[12px] font-medium hover:scale-110  drop-shadow-[0_0_10px_rgba(167,139,250,1)] z-20 ${audioUrl ? "text-primary-200" : "text-primary-300"}`}
       >
-        Open File
+        Open
       </label>
     </div>
   );

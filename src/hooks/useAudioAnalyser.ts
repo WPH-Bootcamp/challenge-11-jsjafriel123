@@ -176,7 +176,7 @@ export function useAudioAnalyser({
       //     maxBassRef.current = bass;
       //     setMaxBass(bass);
       //   }
-      setIsBeat(bass2 > threshold && bass2 > 60);
+      setIsBeat(bass2 > threshold && bass2 > 80);
       // setIsBeat(bass1 > lastBass || bass2 > lastBass);
 
       lastBassRef.current = bass1;

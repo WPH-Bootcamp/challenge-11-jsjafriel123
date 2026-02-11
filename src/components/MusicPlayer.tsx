@@ -57,83 +57,81 @@ export function MusicPlayer() {
   // - Control buttons (play/pause, skip, volume)
 
   return (
-    <div className="flex flex-col items-center gap-5 w-full">
+    <div className="flex flex-col items-center gap-4 w-full">
       {/* TODO: Implementasikan music player di sini */}
 
       <div
-        className="flex flex-col items-center w-125 h-93.5 bg-[#1A1A1A] font-normal text-white rounded-2xl p-xl"
+        className="flex flex-col items-center w-125 h-93.5 bg-[#1A1A1A] font-normal text-white rounded-2xl p-xl gap-4"
         style={{
           boxShadow: "0px 0px 40px 0px #8B5CF64D",
           filter: "brightness(1.2) contrast(1.1)",
         }}
       >
-        <GetAudioFile
-          onMetadata={(tags, file) => {
-            setTags(tags);
-            setAudioUrl(URL.createObjectURL(file));
+        <div className="flex flex-col">
+          <GetAudioFile
+            onMetadata={(tags, file) => {
+              setTags(tags);
+              setAudioUrl(URL.createObjectURL(file));
 
-            if (tags.picture) {
-              const url = pictureToUrl(tags.picture);
-              // console.log("AWUrl:", url);
-              setArtworkUrl(url);
-            }
-          }}
-        />
-        <div className="flex flex-col justify-between w-117 h-35.5">
-          <div className="relative flex flex-row w-117 h-30 gap-6">
-            <motion.img
-              initial={{
-                scale: 1,
-                boxShadow: "0px 0px 0px 0px rgba(124, 58, 237, 0)",
-              }}
-              animate={{
-                scale: isBeat ? 1.05 : 1,
-                filter: isBeat
-                  ? "brightness(1.2) contrast(1.1)"
-                  : "brightness(1) contrast(1)",
-                boxShadow: isBeat
-                  ? "0px 0px 30px 5px rgba(124, 58, 237, 0.6)"
-                  : "0px 0px 0px 0px rgba(124, 58, 237, 0)",
-              }}
-              transition={{
-                type: "spring",
-                stiffness: 300,
-                damping: 15,
-                mass: 0.5,
-              }}
-              src={artworkUrl ?? "/assets/Album-Art.png"}
-              alt={tags?.album ?? "Album artwork"}
-              className="flex size-30 rounded-xl"
-            />
-            <div className="flex flex-col justify-center gap-1.25">
-              <div className="text-lg font-semibold text-neutral-100">
-                {tags?.title ?? "No Title"}
+              if (tags.picture) {
+                const url = pictureToUrl(tags.picture);
+                // console.log("AWUrl:", url);
+                setArtworkUrl(url);
+              }
+            }}
+          />
+          <div className="flex flex-col justify-between w-117 h-35.5">
+            <div className="relative flex flex-row w-117 h-30 gap-6">
+              <motion.img
+                initial={{
+                  scale: 1,
+                  boxShadow: "0px 0px 0px 0px rgba(124, 58, 237, 0)",
+                }}
+                animate={{
+                  scale: isBeat ? 1.05 : 1,
+                  filter: isBeat
+                    ? "brightness(1.2) contrast(1.1)"
+                    : "brightness(1) contrast(1)",
+                  boxShadow: isBeat
+                    ? "0px 0px 30px 5px rgba(124, 58, 237, 0.6)"
+                    : "0px 0px 0px 0px rgba(124, 58, 237, 0)",
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 15,
+                  mass: 0.5,
+                }}
+                src={artworkUrl ?? "/assets/Album-Art.png"}
+                alt={tags?.album ?? "Album artwork"}
+                className="flex size-30 rounded-xl"
+              />
+              <div className="flex flex-col justify-center gap-1.25">
+                <div className="text-lg font-semibold text-neutral-100">
+                  {tags?.title ?? "Song Title"}
+                </div>
+                <div className="text-sm text-neutral-400">
+                  {tags?.artist ?? "Artist"}
+                </div>
+                {/* <div>{tags?.album ?? "No Album"}</div> */}
               </div>
-              <div className="text-sm text-neutral-400">
-                {tags?.artist ?? "No Artist"}
-              </div>
-              {/* <div>{tags?.album ?? "No Album"}</div> */}
             </div>
-          </div>
-          <div className="absolute flex pl-36 mt-23.5">
-            <div className="flex flex-row w-14 h-8 gap-1 justify-center">
-              <EqualizerBar toneMV={bass1MV} />
-              <EqualizerBar toneMV={bass2MV} />
-              <EqualizerBar toneMV={mid1MV} />
-              <EqualizerBar toneMV={mid2MV} />
-              <EqualizerBar toneMV={trebleMV} />
+            <div className="absolute flex pl-36 mt-27.5">
+              <div className="flex flex-row w-14 h-8 gap-1 justify-center">
+                <EqualizerBar toneMV={bass1MV} />
+                <EqualizerBar toneMV={bass2MV} />
+                <EqualizerBar toneMV={mid1MV} />
+                <EqualizerBar toneMV={mid2MV} />
+                <EqualizerBar toneMV={trebleMV} />
+              </div>
             </div>
           </div>
         </div>
-        <audio
-          ref={audioRef}
+        <AudioControl
+          audioRef={audioRef}
           src={audioUrl ?? undefined}
-          controls
           onPlay={resumeAudio}
-          preload="none"
-          muted
         />
-        {/* <AudioControl /> */}
         {/* <div className="flex"> {isBeat ? "🔥" : ""}</div> */}
       </div>
     </div>

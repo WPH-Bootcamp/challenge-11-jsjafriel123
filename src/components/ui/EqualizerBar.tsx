@@ -35,8 +35,9 @@ export function EqualizerBar({ toneMV, offset = 0.2 }: EqualizerBarProps) {
           transformOrigin: "bottom",
           boxShadow: "0px 0px 30px 5px rgba(124, 58, 237, 0.6)",
         }}
-        className="flex w-2 h-8 bg-primary-200"
-        // variants={jumpVariants}
+        className="bar"
+        // className="flex w-2 h-8 bg-primary-200"
+        // // variants={jumpVariants}
         // animate={"jump"}
       />
     </div>

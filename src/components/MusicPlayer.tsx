@@ -9,6 +9,7 @@ import { useState, useEffect, useRef } from "react";
 import { useAudioAnalyser } from "@/hooks/useAudioAnalyser";
 import { pictureToUrl } from "./utilities/PictureToUrl";
 import { AudioControl } from "./AudioControl";
+import { animate, stagger } from "motion";
 
 const NORMALIZEDIV = 5;
 
@@ -19,6 +20,8 @@ export function MusicPlayer() {
   const mid1MV = useRef(useMotionValue(0)).current;
   const mid2MV = useRef(useMotionValue(0)).current;
   const trebleMV = useRef(useMotionValue(0)).current;
+  const animateRef = useRef<any>(null);
+
   const [tags, setTags] = useState<Tags | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [artworkUrl, setArtworkUrl] = useState<string | null>(null);
@@ -59,6 +62,31 @@ export function MusicPlayer() {
   // - Equalizer bars dengan stagger effect
   // - Progress bar dengan fill animation
   // - Control buttons (play/pause, skip, volume)
+  useEffect(() => {
+    const bars = document.querySelectorAll(".bar");
+    if (isPaused) {
+      animateRef.current = animate(
+        bars,
+        // { transform: "translateY(-10px)" },  transform collides the initial scaleY styling of the bar
+        { y: -20 },
+        {
+          duration: 1,
+          repeat: Infinity,
+          repeatType: "mirror",
+          ease: "easeInOut",
+          delay: stagger(0.2, { startDelay: -0.5 }),
+        },
+      );
+    }
+    return () => {
+      if (animateRef.current) {
+        animateRef.current.stop();
+        animateRef.current = null;
+        // animate(bars, { transform: "translateY(0px)" }, { duration: 0 });
+        animate(bars, { y: 0 }, { duration: 0 });
+      }
+    };
+  }, [isPaused]);
 
   return (
     <div className="flex flex-col items-center gap-4 w-full">

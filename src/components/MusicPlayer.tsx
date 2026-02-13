@@ -114,7 +114,7 @@ export function MusicPlayer() {
             onMetadata={(tags, file) => {
               setTags(tags);
               setAudioUrl(URL.createObjectURL(file));
-
+              if (file) setIsPaused(true);
               if (tags.picture) {
                 const url = pictureToUrl(tags.picture);
                 // console.log("AWUrl:", url);

@@ -19,6 +19,10 @@ export function MusicPlayer() {
   const mid1MV = useRef(useMotionValue(0)).current;
   const mid2MV = useRef(useMotionValue(0)).current;
   const trebleMV = useRef(useMotionValue(0)).current;
+  const [tags, setTags] = useState<Tags | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [artworkUrl, setArtworkUrl] = useState<string | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
   const { audioRef, resumeAudio, isBeat } = useAudioAnalyser({
     bass1MV,
     bass2MV,
@@ -26,11 +30,6 @@ export function MusicPlayer() {
     mid2MV,
     trebleMV,
   });
-
-  const [tags, setTags] = useState<Tags | null>(null);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [artworkUrl, setArtworkUrl] = useState<string | null>(null);
-  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     const player = audioRef.current;

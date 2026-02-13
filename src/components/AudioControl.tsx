@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import { formatTime } from "./utilities/SecondsToTime";
-import { motion } from "motion/react";
+import { motion, useAnimation } from "motion/react";
+import { buttonVariants } from "./motion/MotionVariants";
 
 type AudioControlProps = {
   audioRef: React.RefObject<HTMLAudioElement | null>;
@@ -16,13 +17,19 @@ export function AudioControl({ audioRef, src, onPlay }: AudioControlProps) {
   const [volume, setVolume] = useState(0.7);
   const [isLooping, setIsLooping] = useState(false);
   const [isShuffle, setIsShuffle] = useState(false);
-
-  //   console.log("AudioControl audioRef:", audioRef);
+  const [prevSrc, setPrevSrc] = useState(src);
+  const controls = useAnimation();
   const isFile = Boolean(src);
-  const audio = audioRef.current;
-  if (isPlaying && audio?.src !== src) {
-    setIsPlaying(false);
-  }
+
+  useEffect(() => {
+    if (src) {
+      controls.start("spin").then(() => controls.set({ rotate: 0 }));
+    }
+    if (src !== prevSrc) {
+      setPrevSrc(src);
+      if (isPlaying) setIsPlaying(false);
+    }
+  }, [src]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -31,7 +38,6 @@ export function AudioControl({ audioRef, src, onPlay }: AudioControlProps) {
     const onTimeUpdate = () => setCurrentTime(audio.currentTime);
     const onLoadedMetadata = () => setDuration(audio.duration);
     const handleEnded = () => {
-      //   console.log("Audio finished");
       setIsPlaying(false);
       // nextTrack();
       // resetUI();
@@ -49,6 +55,7 @@ export function AudioControl({ audioRef, src, onPlay }: AudioControlProps) {
   }, []);
 
   const togglePlay = async () => {
+    const audio = audioRef.current;
     if (!audio) return;
 
     await onPlay?.();
@@ -115,7 +122,7 @@ export function AudioControl({ audioRef, src, onPlay }: AudioControlProps) {
       </div>
       {/* Controller */}
       <div className="flex w-full h-14 justify-center items-center gap-4 ">
-        <img
+        <motion.img
           src="/assets/icon-Shuffle.svg"
           alt="Shuffle"
           onClick={toggleShuffle}
@@ -124,42 +131,34 @@ export function AudioControl({ audioRef, src, onPlay }: AudioControlProps) {
               ? "bg-neutral-800 shadow-[0px_0px_5px_1px_rgba(139,92,246,0.8)]"
               : "bg-none"
           }`}
+          variants={buttonVariants}
+          animate={controls}
         />
-        <img
+        <motion.img
           src="/assets/icon-Back.svg"
           alt="Previous"
           className="size-9 p-2 rounded-md cursor-pointer"
+          variants={buttonVariants}
+          animate={controls}
         />
         <motion.img
           src={isPlaying ? "/assets/icon-Pause.svg" : "/assets/icon-Play.svg"}
           alt={isPlaying ? "Pause" : "Play"}
           onClick={isFile ? togglePlay : undefined}
           className={`flex justify-center items-center size-14 rounded-full p-4 ${isFile ? (isPlaying ? "bg-primary-200 cursor-pointer" : "bg-primary-300 cursor-pointer") : "bg-neutral-500 cursor-not-allowed"}`}
-          initial={
-            isFile ?? { boxShadow: "0px 0px 20px 1px rgba(139,92,246,0.3)" }
-          }
-          animate={
-            isFile && !isPlaying
-              ? { boxShadow: "0px 0px 45px 5px rgba(139,92,246,0.8)" }
-              : { boxShadow: "0px 0px 20px 1px rgba(139,92,246,0.3)" }
-          }
-          transition={
-            isFile && !isPlaying
-              ? {
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatType: "mirror",
-                  ease: "easeInOut",
-                }
-              : { duration: 1, ease: "easeInOut" }
-          }
+          variants={buttonVariants}
+          initial="resting"
+          animate={isFile && !isPlaying ? "pulse" : "resting"}
+          custom={controls}
         />
-        <img
+        <motion.img
           src="/assets/icon-Forward.svg"
           alt="Next"
           className="size-9 p-2 rounded-md cursor-pointer"
+          variants={buttonVariants}
+          animate={controls}
         />
-        <img
+        <motion.img
           src="/assets/icon-Repeat.svg"
           alt="Repeat"
           onClick={toggleLoop}
@@ -168,6 +167,8 @@ export function AudioControl({ audioRef, src, onPlay }: AudioControlProps) {
               ? "bg-neutral-800 shadow-[0px_0px_5px_1px_rgba(139,92,246,0.8)]"
               : "bg-none"
           }`}
+          variants={buttonVariants}
+          animate={controls}
         />
       </div>
       {/* Volume */}

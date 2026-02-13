@@ -1,6 +1,8 @@
 "use client";
 import type { Tags } from "jsmediatags/dist/jsmediatags.min.js";
 import { useState } from "react";
+import { motion } from "motion/react";
+
 type GetAudioFileProps = {
   onMetadata: (tags: Tags, file: File) => void;
 };
@@ -37,12 +39,29 @@ export function GetAudioFile({ onMetadata }: GetAudioFileProps) {
         }}
         className="hidden"
       />
-      <label
+      <motion.label
         htmlFor="audio-upload"
-        className={`flex cursor-pointer text-[12px] text-primary-300 font-medium hover:scale-110  drop-shadow-[0_0_10px_rgba(167,139,250,1)] z-20 ${audioUrl ? "brightness-100" : "brightness-150"}`}
+        // onClick={}
+        className={`flex cursor-pointer px-1 rounded-full text-[12px] text-primary-300 font-medium hover:scale-110  drop-shadow-[0_0_10px_rgba(167,139,250,1)] z-20 ${audioUrl ? "brightness-100" : "brightness-150"}`}
+        initial={{ boxShadow: "0px 0px 5px 0px rgba(139,92,246,0.3)" }}
+        animate={
+          !audioUrl
+            ? { boxShadow: "0px 0px 10px 2px rgba(139,92,246,0.8)" }
+            : { boxShadow: "0px 0px 5px 0px rgba(139,92,246,0.3)" }
+        }
+        transition={
+          !audioUrl
+            ? {
+                duration: 2,
+                repeat: Infinity,
+                repeatType: "mirror",
+                ease: "easeInOut",
+              }
+            : { duration: 1, ease: "easeInOut" }
+        }
       >
         Open
-      </label>
+      </motion.label>
     </div>
   );
 }
